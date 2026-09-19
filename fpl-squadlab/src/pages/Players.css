@@ -1,0 +1,123 @@
+.filters-container {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-bottom: 1rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+  flex: 1;
+}
+
+.filter-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+}
+
+.filter-group input,
+.filter-group select {
+  width: 100%;
+  background: rgba(6, 16, 11, 0.96);
+  border: 1px solid rgba(151, 184, 165, 0.18);
+  color: var(--text-primary);
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  border-color: var(--primary-green);
+}
+
+.table-wrapper {
+  padding: 1rem 0;
+  overflow: hidden;
+}
+
+.results-count {
+  padding: 0 1.5rem 1rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.players-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+  min-width: 980px;
+}
+
+.players-table th,
+.players-table td {
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid rgba(220, 229, 225, 0.8);
+}
+
+.players-table th {
+  background-color: rgba(5, 14, 9, 0.96);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.players-table tbody tr:hover {
+  background-color: rgba(46, 224, 122, 0.08);
+}
+
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable-header:hover {
+  color: #fff;
+}
+
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover {
+  transform: translateY(-1px);
+}
+
+.player-name-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.player-name-cell .full-name {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.player-name-cell strong {
+  font-size: 0.98rem;
+}
+
+.table-footer-note {
+  padding: 1rem 1.5rem 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .players-table th,
+  .players-table td {
+    padding: 0.75rem 0.9rem;
+  }
+}

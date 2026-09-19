@@ -1,0 +1,501 @@
+.team-builder-layout {
+  display: flex;
+  gap: 2rem;
+  flex-direction: column;
+}
+
+@media (min-width: 992px) {
+  .team-builder-layout {
+    flex-direction: row;
+  }
+}
+
+.pitch-area {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.player-selection-sidebar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 800px;
+}
+
+/* Team Summary */
+.team-summary {
+  padding: 1.5rem;
+}
+
+.summary-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.summary-stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.summary-stat-box .stat-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.summary-stat-box .stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #f4fbf7;
+}
+
+.summary-stat-box .stat-value.negative {
+  color: #d9534f;
+}
+
+.summary-stat-box .stat-value.complete {
+  color: var(--primary-green);
+}
+
+/* Pitch Container */
+.pitch-container {
+  background:
+    radial-gradient(circle at 50% 10%, rgba(255,255,255,0.06), transparent 24%),
+    linear-gradient(180deg, #0e5f35 0%, #083d23 100%);
+  border-radius: var(--border-radius);
+  padding: 2rem 1rem;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07), inset 0 0 26px rgba(0,0,0,0.22);
+  min-height: 600px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.pitch-container::before,
+.pitch-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pitch-container::before {
+  background:
+    linear-gradient(to right, transparent 0%, rgba(255,255,255,0.24) 50%, transparent 100%) center/100% 2px no-repeat,
+    linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%) center/2px 100% no-repeat;
+  opacity: 0.35;
+}
+
+.pitch-container::after {
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 72px, rgba(255,255,255,0.13) 73px 75px, transparent 76px),
+    linear-gradient(rgba(255,255,255,0.14), rgba(255,255,255,0.14)) center 15% / 58% 2px no-repeat,
+    linear-gradient(rgba(255,255,255,0.14), rgba(255,255,255,0.14)) center 85% / 58% 2px no-repeat,
+    linear-gradient(rgba(255,255,255,0.14), rgba(255,255,255,0.14)) center 15% / 2px 18% no-repeat,
+    linear-gradient(rgba(255,255,255,0.14), rgba(255,255,255,0.14)) center 85% / 2px 18% no-repeat,
+    linear-gradient(rgba(255,255,255,0.10), rgba(255,255,255,0.10)) center top 7% / 28% 2px no-repeat,
+    linear-gradient(rgba(255,255,255,0.10), rgba(255,255,255,0.10)) center bottom 7% / 28% 2px no-repeat,
+    linear-gradient(rgba(255,255,255,0.10), rgba(255,255,255,0.10)) center top 7% / 2px 8% no-repeat,
+    linear-gradient(rgba(255,255,255,0.10), rgba(255,255,255,0.10)) center bottom 7% / 2px 8% no-repeat,
+    radial-gradient(circle at 12% 18%, rgba(255,255,255,0.04) 0 12px, transparent 13px),
+    radial-gradient(circle at 88% 82%, rgba(255,255,255,0.04) 0 12px, transparent 13px);
+  opacity: 0.5;
+}
+
+.pitch {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 600px;
+  height: 100%;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.pitch-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Pitch Player */
+.pitch-player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+  position: relative;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.pitch-player:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.03);
+}
+
+.shirt-container {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 5px;
+}
+
+.shirt {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px 5px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.empty-shirt {
+  background-color: rgba(6, 16, 11, 0.35);
+  border: 2px dashed rgba(255, 255, 255, 0.28);
+  cursor: default;
+}
+
+.filled-shirt {
+  background: linear-gradient(180deg, #0a7b43, #035a31);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.22);
+}
+
+.remove-button {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.remove-button:hover {
+  background-color: #c9302c;
+}
+
+.player-label {
+  background: linear-gradient(180deg, rgba(6, 16, 11, 0.96), rgba(10, 22, 15, 0.96));
+  padding: 0.35rem 0.4rem;
+  border-radius: 8px;
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+  border: 1px solid rgba(151, 184, 165, 0.12);
+}
+
+.empty-label {
+  color: var(--text-secondary);
+  font-weight: bold;
+  font-size: 0.8rem;
+  background-color: rgba(6, 16, 11, 0.68);
+}
+
+.player-name {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-price {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+/* Sidebar */
+.sidebar-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.sidebar-input {
+  width: 100%;
+}
+
+.sidebar-input:focus {
+  border-color: var(--primary-green);
+}
+
+.sidebar-player-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-player-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.9rem;
+  background: linear-gradient(180deg, rgba(8, 18, 13, 0.96), rgba(6, 16, 11, 0.96));
+  border-radius: 12px;
+  border: 1px solid rgba(151, 184, 165, 0.16);
+  transition: background-color 0.2s;
+}
+
+.sidebar-player-item:hover {
+  background-color: rgba(46, 224, 122, 0.07);
+}
+
+.sidebar-player-item.in-squad {
+  opacity: 0.6;
+}
+
+.sidebar-player-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-player-meta {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.sidebar-player-action {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.sidebar-player-price {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.add-btn {
+  background-color: var(--primary-green);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-btn:hover {
+  background-color: var(--secondary-green);
+}
+
+.add-btn.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.no-results {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 2rem;
+}
+
+/* Modal and Sub styles */
+
+.pitch-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bench-container {
+  background: linear-gradient(180deg, rgba(8, 18, 13, 0.92), rgba(6, 16, 11, 0.92));
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid rgba(151, 184, 165, 0.16);
+}
+
+.bench-title {
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.bench-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.sub-active {
+  animation: pulse 1.5s infinite;
+  box-shadow: 0 0 10px #ffeb3b, inset 0 0 10px #ffeb3b;
+  border-radius: 5px;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.captain-badge, .vice-captain-badge {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  background-color: #333;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 4px;
+  border-radius: 10px;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.captain-badge {
+  background-color: #ffeb3b; /* Gold */
+  color: #333;
+  font-size: 12px;
+}
+
+.sub-banner {
+  background: linear-gradient(180deg, rgba(46, 224, 122, 0.18), rgba(20, 179, 95, 0.12));
+  color: #dff8e8;
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.cancel-sub-btn {
+  background: rgba(0,0,0,0.1);
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.cancel-sub-btn:hover {
+  background: rgba(0,0,0,0.2);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: linear-gradient(180deg, rgba(8, 18, 13, 0.98), rgba(6, 16, 11, 0.98));
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  width: 90%;
+  max-width: 400px;
+  box-shadow: var(--shadow-md);
+}
+
+.modal-content h3 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.modal-btn {
+  padding: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  background-color: rgba(255,255,255,0.05);
+  color: var(--text-primary);
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-btn:hover:not(:disabled) {
+  background-color: rgba(46, 224, 122, 0.10);
+}
+
+.modal-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modal-btn.danger {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.modal-btn.danger:hover {
+  background-color: #ffcdd2;
+}
+
+.modal-btn.secondary {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid rgba(151, 184, 165, 0.18);
+}
+
+@media (max-width: 768px) {
+  .pitch-row,
+  .bench-row {
+    gap: 0.7rem;
+  }
+
+  .pitch-player {
+    width: 72px;
+  }
+
+  .player-selection-sidebar {
+    height: auto;
+    min-height: 600px;
+  }
+}
