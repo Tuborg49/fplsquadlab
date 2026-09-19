@@ -1,0 +1,19 @@
+# Local tooling / editor state
+.freebuff/
+
+# Dependencies and build output (also ignored inside fpl-squadlab/)
+node_modules/
+dist/
+
+# Environment files - never commit real values.
+# .env.example is the only env file that may be committed.
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# OS noise
+.DS_Store
+Thumbs.db

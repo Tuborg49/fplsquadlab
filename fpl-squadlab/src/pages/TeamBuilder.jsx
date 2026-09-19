@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { getBootstrap } from '../services/fplApi';
+import { getBootstrap, asArray } from '../services/fplApi';
 import Pitch from '../components/Pitch';
 import TeamSummary from '../components/TeamSummary';
 import { addPlayerToSquad, isValidStartingFormation } from '../utils/teamRules';
+import { loadSquad, saveSquad } from '../utils/squadStorage';
 import './TeamBuilder.css';
 
 const TeamBuilder = () => {
@@ -11,13 +12,7 @@ const TeamBuilder = () => {
   const [error, setError] = useState(null);
 
   // Load from localStorage or empty array
-  const [squad, setSquad] = useState(() => {
-    const saved = localStorage.getItem('fpl_squad');
-    if (saved) {
-      try { return JSON.parse(saved); } catch { return []; }
-    }
-    return [];
-  });
+  const [squad, setSquad] = useState(loadSquad);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [positionFilter, setPositionFilter] = useState('');
@@ -32,9 +27,9 @@ const TeamBuilder = () => {
     try {
       const result = await getBootstrap();
       setData({
-        elements: result.elements || [],
-        teams: result.teams || [],
-        element_types: result.element_types || [],
+        elements: asArray(result.elements),
+        teams: asArray(result.teams),
+        element_types: asArray(result.element_types),
         game_settings: result.game_settings || {}
       });
     } catch (err) {
@@ -50,7 +45,7 @@ const TeamBuilder = () => {
 
   // Save to localStorage when squad changes
   useEffect(() => {
-    localStorage.setItem('fpl_squad', JSON.stringify(squad));
+    saveSquad(squad);
   }, [squad]);
 
   const teamMap = useMemo(() => {
@@ -64,10 +59,11 @@ const TeamBuilder = () => {
 
     if (searchTerm) {
       const lowerTerm = searchTerm.toLowerCase();
-      players = players.filter(p => 
-        p.first_name.toLowerCase().includes(lowerTerm) || 
-        p.second_name.toLowerCase().includes(lowerTerm) ||
-        p.web_name.toLowerCase().includes(lowerTerm)
+      // FPL fields can be missing or null for some players, so never assume a string.
+      players = players.filter(p =>
+        String(p.first_name ?? '').toLowerCase().includes(lowerTerm) ||
+        String(p.second_name ?? '').toLowerCase().includes(lowerTerm) ||
+        String(p.web_name ?? '').toLowerCase().includes(lowerTerm)
       );
     }
 

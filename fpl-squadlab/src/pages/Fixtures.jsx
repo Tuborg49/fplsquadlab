@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { getBootstrap, getFixtures } from '../services/fplApi';
+import { getBootstrap, getFixtures, asArray } from '../services/fplApi';
 import './Fixtures.css';
 
 const Fixtures = () => {
@@ -20,16 +20,17 @@ const Fixtures = () => {
         getFixtures()
       ]);
 
-      setTeams(bootstrapData.teams || []);
-      setFixtures(fixturesData || []);
+      setTeams(asArray(bootstrapData.teams));
+      setFixtures(asArray(fixturesData));
       
       // Default gameweek filter to current gameweek if available
-      const currentEvent = bootstrapData.events?.find(e => e.is_current)?.id;
+      const events = asArray(bootstrapData.events);
+      const currentEvent = events.find(e => e.is_current)?.id;
       if (currentEvent) {
-        setGameweekFilter(currentEvent.toString());
-      } else if (bootstrapData.events?.length > 0) {
+        setGameweekFilter(String(currentEvent));
+      } else if (events.length > 0) {
         // If no current event (e.g. pre-season), default to first event
-        setGameweekFilter(bootstrapData.events[0].id.toString());
+        setGameweekFilter(String(events[0].id));
       }
     } catch (err) {
       setError(err.message || 'Failed to load fixtures data');

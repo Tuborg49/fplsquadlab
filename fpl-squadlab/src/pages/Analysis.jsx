@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getBootstrap, getFixtures } from '../services/fplApi';
+import { getBootstrap, getFixtures, asArray } from '../services/fplApi';
+import { loadSquad } from '../utils/squadStorage';
 import {
   PieChart,
   Pie,
@@ -58,17 +59,21 @@ const Analysis = () => {
         getFixtures()
       ]);
 
-      setData(bootstrapData);
-      setFixtures(fixturesData || []);
+      // Normalise the bootstrap payload once so every consumer below (analysis,
+      // transfer comparison and the assistant) can rely on these being arrays.
+      setData({
+        ...bootstrapData,
+        elements: asArray(bootstrapData.elements),
+        teams: asArray(bootstrapData.teams),
+        element_types: asArray(bootstrapData.element_types),
+        events: asArray(bootstrapData.events),
+        game_settings: bootstrapData.game_settings || {}
+      });
+      setFixtures(asArray(fixturesData));
 
-      let savedSquad = [];
-      try {
-        savedSquad = JSON.parse(localStorage.getItem('fpl_squad') || '[]');
-      } catch {
-        savedSquad = [];
-      }
+      const savedSquad = loadSquad();
       const liveSquad = savedSquad.map(savedPlayer => {
-        const livePlayer = bootstrapData.elements.find(player => player.id === savedPlayer.id);
+        const livePlayer = asArray(bootstrapData.elements).find(player => player.id === savedPlayer.id);
         if (!livePlayer) {
           return savedPlayer;
         }

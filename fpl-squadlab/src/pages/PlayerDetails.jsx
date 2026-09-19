@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getBootstrap, getPlayerDetails } from '../services/fplApi';
+import { getBootstrap, getPlayerDetails, asArray } from '../services/fplApi';
 import { addPlayerToSquad } from '../utils/teamRules';
+import { loadSquad, saveSquad } from '../utils/squadStorage';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { calculateSquadLabScore } from '../utils/calculations';
 import './PlayerDetails.css';
@@ -15,14 +16,7 @@ const PlayerDetails = () => {
   const [positions, setPositions] = useState({});
   const [gameData, setGameData] = useState(null);
   const [addFeedback, setAddFeedback] = useState(null);
-  const [squad, setSquad] = useState(() => {
-    try {
-      const saved = localStorage.getItem('fpl_squad');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [squad, setSquad] = useState(loadSquad);
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -40,21 +34,21 @@ const PlayerDetails = () => {
 
       // Create lookup maps
       const teamMap = {};
-      bootstrapData.teams.forEach(t => { teamMap[t.id] = t; });
+      asArray(bootstrapData.teams).forEach(t => { teamMap[t.id] = t; });
       setTeams(teamMap);
 
       const posMap = {};
-      bootstrapData.element_types.forEach(p => { posMap[p.id] = p.singular_name; });
+      asArray(bootstrapData.element_types).forEach(p => { posMap[p.id] = p.singular_name; });
       setPositions(posMap);
 
       // Needed to validate squad rules when adding this player to a squad.
       setGameData({
-        element_types: bootstrapData.element_types,
+        element_types: asArray(bootstrapData.element_types),
         game_settings: bootstrapData.game_settings
       });
 
       // Find basic info for this player
-      const playerInfo = bootstrapData.elements.find(p => p.id.toString() === id);
+      const playerInfo = asArray(bootstrapData.elements).find(p => String(p.id) === id);
       
       if (!playerInfo) {
         throw new Error('Player not found');
@@ -78,9 +72,12 @@ const PlayerDetails = () => {
       return null;
     }
 
-    const upcomingFixtures = details?.fixtures?.slice(0, 3) || [];
-    const fixtureDifficulty = upcomingFixtures.length > 0
-      ? upcomingFixtures.reduce((sum, fixture) => sum + fixture.difficulty, 0) / upcomingFixtures.length
+    const upcomingFixtures = asArray(details?.fixtures).slice(0, 3);
+    // FDR is absent for fixtures that have not been rated yet; averaging a
+    // missing value would turn the whole score into NaN.
+    const ratedFixtures = upcomingFixtures.filter(fixture => Number.isFinite(Number(fixture.difficulty)));
+    const fixtureDifficulty = ratedFixtures.length > 0
+      ? ratedFixtures.reduce((sum, fixture) => sum + Number(fixture.difficulty), 0) / ratedFixtures.length
       : null;
 
     return calculateSquadLabScore(basicInfo, { fixtureDifficulty });
@@ -125,7 +122,7 @@ const PlayerDetails = () => {
     }
 
     setSquad(result.squad);
-    localStorage.setItem('fpl_squad', JSON.stringify(result.squad));
+    saveSquad(result.squad);
     setAddFeedback(`${basicInfo.web_name} added to your squad.`);
   };
   

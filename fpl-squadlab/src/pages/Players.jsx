@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getBootstrap } from '../services/fplApi';
+import { getBootstrap, asArray } from '../services/fplApi';
 import './Players.css';
 
 const Players = () => {
@@ -23,9 +23,9 @@ const Players = () => {
     try {
       const result = await getBootstrap();
       setData({
-        elements: result.elements || [],
-        teams: result.teams || [],
-        element_types: result.element_types || []
+        elements: asArray(result.elements),
+        teams: asArray(result.teams),
+        element_types: asArray(result.element_types)
       });
     } catch (err) {
       setError(err.message || 'Failed to load players data');
@@ -58,21 +58,22 @@ const Players = () => {
     // Search filter
     if (searchTerm) {
       const lowerTerm = searchTerm.toLowerCase();
-      players = players.filter(p => 
-        p.first_name.toLowerCase().includes(lowerTerm) || 
-        p.second_name.toLowerCase().includes(lowerTerm) ||
-        p.web_name.toLowerCase().includes(lowerTerm)
+      // FPL fields can be missing or null for some players, so never assume a string.
+      players = players.filter(p =>
+        String(p.first_name ?? '').toLowerCase().includes(lowerTerm) ||
+        String(p.second_name ?? '').toLowerCase().includes(lowerTerm) ||
+        String(p.web_name ?? '').toLowerCase().includes(lowerTerm)
       );
     }
 
     // Position filter
     if (positionFilter) {
-      players = players.filter(p => p.element_type.toString() === positionFilter);
+      players = players.filter(p => String(p.element_type) === positionFilter);
     }
 
     // Team filter
     if (teamFilter) {
-      players = players.filter(p => p.team.toString() === teamFilter);
+      players = players.filter(p => String(p.team) === teamFilter);
     }
 
     // Price filter

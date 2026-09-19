@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import ErrorBoundary from './components/ErrorBoundary';
 import Dashboard from './pages/Dashboard';
 import Players from './pages/Players';
 import PlayerDetails from './pages/PlayerDetails';
@@ -15,14 +16,16 @@ function App() {
       <div className="app">
         <Navbar />
         <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/players" element={<Players />} />
-            <Route path="/players/:id" element={<PlayerDetails />} />
-            <Route path="/team-builder" element={<TeamBuilder />} />
-            <Route path="/fixtures" element={<Fixtures />} />
-            <Route path="/analysis" element={<Analysis />} />
-          </Routes>
+          <ErrorBoundary>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/players" element={<Players />} />
+              <Route path="/players/:id" element={<PlayerDetails />} />
+              <Route path="/team-builder" element={<TeamBuilder />} />
+              <Route path="/fixtures" element={<Fixtures />} />
+              <Route path="/analysis" element={<Analysis />} />
+            </Routes>
+          </ErrorBoundary>
         </main>
       </div>
     </Router>

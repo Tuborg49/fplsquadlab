@@ -41,3 +41,29 @@ Notes:
   `curl http://localhost:5173/api/bootstrap-static/` should both return **200**.
   The second confirms the API proxy is working, which every page depends on.
 - Logs: see the `.log` / `.log.err` paths above.
+
+## 3. Run the production build instead (recommended before a Vercel deploy)
+
+`npm run dev` serves source files; Vercel serves `dist/`. To preview what Vercel
+actually serves, build first and run Vite's preview server (default port **4173**):
+
+```bash
+cd fpl-squadlab
+npm run build
+```
+
+```
+powershell -NoProfile -Command "(Start-Process -FilePath 'npm.cmd' -ArgumentList 'run','preview','--','--strictPort' -WorkingDirectory 'C:\project\FPL\fpl-squadlab' -RedirectStandardOutput 'C:\project\FPL\.freebuff\preview-a849b61a-ed44-40f9-8aca-b90374bc307d.log' -RedirectStandardError 'C:\project\FPL\.freebuff\preview-a849b61a-ed44-40f9-8aca-b90374bc307d.log.err' -WindowStyle Hidden -PassThru).Id"
+```
+
+Health checks for the production preview:
+
+```bash
+curl http://localhost:4173/                      # 200, the built index.html
+curl http://localhost:4173/players               # 200, SPA deep-link works
+curl http://localhost:4173/api/bootstrap-static/ # 200 JSON through preview.proxy
+```
+
+The `/api` proxy exists in **both** `server.proxy` and `preview.proxy`, because
+`npm run preview` would otherwise have no API at all. On Vercel the equivalent is
+the `/api/(.*)` rewrite in `vercel.json` — keep the three in sync.
